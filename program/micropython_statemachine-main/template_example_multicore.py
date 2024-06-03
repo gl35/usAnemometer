@@ -1,70 +1,11 @@
-'''Blink the on board LED Pico W pinouts only
-Patrick Palmer Jan 2024'''
-from machine import Pin, Timer, PWM, UART
 from neotimer import *
 from statemachine import *
+from machine import Pin, UART
 import time, gc, _thread
-import select
-import sys
 
-
-led = machine.Pin("LED", machine.Pin.OUT) #GPIO LED
-
-shutdownDamp = Pin (16, Pin.OUT) #SHUTDown Digital Amplifier GPIO 16
-timer = machine.Timer() # timer for the blinking led
-
-pdm1_On = Pin (10, Pin.OUT) #GPIO 10 & 11 to power on and off the PDM mics
-pdm2_On = Pin (11, Pin.OUT)
-fclk = 1000
-
-#LED blinking logic
-led.on()
-def blink(timer):
- led.toggle()
-  
-timer.init(freq=10, mode=Timer.PERIODIC, callback=blink)
-
-#1st PWM - 39kHz to excit the ultrasonic generator
-pwm1 = PWM ( Pin ( 15, Pin.OUT ) ) # GP15
-pwm1.freq ( 39000 ) # 39kHz
-pwm1.duty_u16 (65536>>3 ) # duty 50% (65535/2)
-
-#2nd PWM - 1.024Mhz clk for PDM mic
-pwm2 = PWM ( Pin ( 1, Pin.OUT ) ) # GP1
-pwm2.freq ( fclk ) # fclk = 1.024MHz, 3.072Mhz 
-pwm2.duty_u16 (65536>>3 ) # duty 50% (65535/2)
-
-
-'''UART communication'''
-poll_obj = select.poll()
-poll_obj.register(sys.stdin, 1)
-
-'''while True:
-    if poll_obj.poll(0):
-        ch = sys.stdin.read(1)
-        if ch == 's': #press t to shutdown
-            shutdownDamp.value (1);
-            
-            print ("Start Digital Amplifier")
-            #fclk = 39000;
-            pwm1.freq ( fclk ) # 39kHz
-        if ch == 't': # press s to start
-            shutdownDamp.value (0);
-            #PWM.deinit();
-            print ("Shut Down Digital Amplifier")
-        #for testing
-        if ch == 'p':
-            fclk = fclk + 100;
-            pwm2.freq ( fclk )
-        if ch == 'm':
-            fclk = fclk - 100;
-            pwm2.freq ( fclk )
-    time.sleep(0.1)
- '''   
-#Start working on state machine here
 state_machine = StateMachine()
 myTimer = Neotimer(1000)
-#led = Pin(25,Pin.OUT)
+led = Pin(25,Pin.OUT)
 
 #============================================================
 # States Logic Functions
@@ -72,7 +13,6 @@ myTimer = Neotimer(1000)
 def state0_logic():
     # Referenced global variables
     # ----> Here <----
-    shutdownDamp = Pin (16, Pin.OUT) #SHUTDown Digital Amplifier GPIO 16
     
     if state_machine.execute_once:
         # ----> Code that executes just once during state <----
@@ -82,31 +22,21 @@ def state0_logic():
 
     # Code that executes continously during state
     # ----> Here <----
-    shutdownDamp.value (0);
-    #PWM.deinit();
-    print ("Shut Down Digital Amplifier")
-    
     led.off()
     
 
 def state1_logic():
     # Referenced global variables
     # ----> Here <----
-    shutdownDamp = Pin (16, Pin.OUT) #SHUTDown Digital Amplifier GPIO 16
     
     if state_machine.execute_once:
         # ----> Code that executes just once during state <----
         # ----> Here <----
         print("Machine in State 1")
         myTimer.start()
-        
+
     # Code that executes continously during state
-    # ----> Here <----
-    shutdownDamp.value (1);
-            
-    print ("Start Digital Amplifier")
-    #fclk = 39000;
-    pwm1.freq ( fclk ) # 39kHz
+    # ----> Here <----   
     led.on()
 
 #============================================================
@@ -172,4 +102,3 @@ print("Free memory",free_memory_threshold)
 # Main Loop:
 while True:
     main_loop()
-    
