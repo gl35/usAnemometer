@@ -87,24 +87,25 @@ while True:
     if poll_obj.poll(0):
         ch = sys.stdin.read(1)
         if ch == 's': #press t to shutdown
-            shutdownDamp.value (1);
+            shutdownDamp.value (1)
             
             print ("Start Digital Amplifier")
             #fclk = 39000;
             pwm1.freq ( 39000 ) # 39kHz
-            #pwm1.duty_u16 (32767 ) 
+            pwm1.duty_u16 (32767 ) 
             t = ticker.count
             pdm2_On(1)
             print(t)
             
             
         if ch == 't': # press s to start
-            shutdownDamp.value (0);
+            shutdownDamp.value (0)
             #PWM.deinit();
             print ("Shut Down Digital Amplifier")
-            fclk = 1024000;
+            fclk = 1024000
             pwm2.freq ( fclk )
             pdm2_On(0)
+
         #for testing
         if ch == 'p':
             fclk = 3072000;

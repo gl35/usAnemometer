@@ -3,7 +3,7 @@ DEBUG_MODE = True
 import _thread,gc
 from neotimer import *                    #<---- 3,088 bytes
 from statemachine import *                #<---- 3,616 bytes
-from pitches import *
+#from pitches import *
 from machine import Pin, PWM
 import time
 
@@ -26,8 +26,8 @@ BUTTON_1 = Pin(20,Pin.IN,Pin.PULL_UP)
 BUTTON_2 = Pin(21,Pin.IN,Pin.PULL_UP)
 BUTTON_3 = Pin(22,Pin.IN,Pin.PULL_UP)
 
-music_index = 0
-music = [E7, E7, 0, E7, 0, C7, E7, 0, G7, 0, 0, 0, G6, 0, 0, 0, C7, 0, 0, G6, 0, 0, E6, 0, 0, A6, 0, B6, 0, AS6, A6, 0, G6, E7, 0, G7, A7, 0, F7, G7, 0, E7, 0,C7, D7, B6, 0, 0, C7, 0, 0, G6, 0, 0, E6, 0, 0, A6, 0, B6, 0, AS6, A6, 0, G6, E7, 0, G7, A7, 0, F7, G7, 0, E7, 0,C7, D7, B6, 0, 0]
+#music_index = 0
+#music = [E7, E7, 0, E7, 0, C7, E7, 0, G7, 0, 0, 0, G6, 0, 0, 0, C7, 0, 0, G6, 0, 0, E6, 0, 0, A6, 0, B6, 0, AS6, A6, 0, G6, E7, 0, G7, A7, 0, F7, G7, 0, E7, 0,C7, D7, B6, 0, 0, C7, 0, 0, G6, 0, 0, E6, 0, 0, A6, 0, B6, 0, AS6, A6, 0, G6, E7, 0, G7, A7, 0, F7, G7, 0, E7, 0,C7, D7, B6, 0, 0]
 
 free_memory_threshold = 0
 lock = _thread.allocate_lock()
