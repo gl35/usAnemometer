@@ -23,10 +23,9 @@ pdm2_On = Pin (11, Pin.OUT)
 
 
 #LED blinking logic
-# led.on()
+led.on()
 def blink(timer):
-    led.off()
-  
+    led.off() 
 timer.init(freq=10, mode=Timer.PERIODIC, callback=blink)
 
 #1st PWM - 39kHz to excit the ultrasonic generator
@@ -40,15 +39,16 @@ pwm2 = PWM ( Pin ( 1, Pin.OUT ) ) # GP1
 pwm2.freq ( fclk ) # fclk = 1.024MHz, 3.072Mhz 
 pwm2.duty_u16 (32767 ) # duty 50% (65535/2)
 
-pwm3 = PWM ( Pin (22, Pin.OUT) ) # GP22 for dflipflop 48000hz
-pwm3.freq (48000)
-pwm3.duty_u16 (32767)
+# pwm3 = PWM ( Pin (22, Pin.OUT) ) # GP22 for dflipflop 48000hz
+# pwm3.freq (16000000)
+# pwm3.duty_u16 (32767)
 
 #ADC value for PDM mic 2
 # pdm1 = ADC(Pin(26))     # create ADC object on ADC pin GPIO26 - variable name is pdm1 and not adc1 - uncomment if using pdm mic
 
 adc1 = ADC(Pin(26))     # create ADC object on ADC pin GPIO26 mic1 - uncomment if using analog mic
 adc2 = ADC(Pin(27))     # create ADC object on ADC pin GPIO27 mic2 - uncomment if using analog mic 
+adc3 = ADC(Pin(28)) # create ADC on gpio28 for the dff output.
 
 analogV_arr1 = [] #needs more work on array
 time_arr1 = []
@@ -86,12 +86,12 @@ def adc_val():
         analogV_arr2.append( adc2.read_u16())
         #volt2.append(analogV_arr2)
         #uncomment to valid the data in excel
-        print("Time1 =", time_arr1)
-        print("Analog Value1 =", analogV_arr1)
-        print("Time2 =", time_arr2)
-        print("Analog Value2 =", analogV_arr2)
+#         print("Time1 =", time_arr1)
+#         print("Analog Value1 =", analogV_arr1)
+#         print("Time2 =", time_arr2)
+#         print("Analog Value2 =", analogV_arr2)
 #         utime.sleep_us(1)
-     
+
 #PDM to ADC function
 
 def PDM_adc():
@@ -105,36 +105,22 @@ conversion_fact = 3.3/(65535)
 
 analog = float()
 #convert raw data to voltage and if V > 1.5v then store time
-def ADCscaling(analog):
-    v = analog * conversion_fact
-    volt1.append (v.value)
+def ADCscaling():
+    v = adc3.read_u16() * conversion_fact
+#     volt1.append (v.value)
     return v
-    
-#D flip flop
-def dff():
-    print(dff1.value())
+ 
     
 #calculate time
+deltaT = 0
 time1 = float()
 time2 = float()
-deltaT = float()
+time_arr = []  # time array for storing the time when voltage is < 2.54
+time_old = 1
+time_new = 2
 windspeed = float()
-def calTime():
-    global deltaT
-    global time1
-    global time2
-    global windspeed
-    for i in range(0, 400):
-        if analogV_arr1[i] >= 40000: #max 65535
-            time1 = time.ticks_us()
-        if analogV_arr2[i] >= 40000: #max 65535
-            time2 = time.ticks_us()
-        deltaT = time.ticks_diff(time1, time2)
-        print("TOF = ", deltaT)
-        windspeed = 0.2/(deltaT*10**-6)
-        print("windspeed = ", windspeed)
-    return deltaT
-# _thread.start_new_thread(adc_val, ())
+
+
 
 #@asm_pio(set_init=PIO.OUT_HIGH)
 # def usPulse():
@@ -182,12 +168,18 @@ def uartComm():
     poll_obj = select.poll()
     poll_obj.register(sys.stdin, 1)
     
-#     global deltaT 
-    while True:   
+    global deltaT 
+    while True:
+
+#         windspeed = 0.2/((deltaT*10**-6)*22.75)
+#         time.sleep(1)
+
     #dff2
     #dff1
     #print(dff2.value())
     #print(PDM2)
+#         print(dff1.value())
+        
 #         if dff2.value() == True:
 #             time1 = rtc.datetime()
 #         if dff1.value() == True:
@@ -198,22 +190,25 @@ def uartComm():
             if ch == 's': #press t to shutdown
                 print ("Start Digital Amplifier")
                 #fclk = 39000;                
-    
-                pwm1.freq ( 39000 ) # 39kHz
+                shutdownDamp.value(1)   
+                
+                pwm1.freq ( 25000 ) # 25kHz new ultrasonic 
                 pwm1.duty_u16 ( 32767 )
-                shutdownDamp.value(1)
-#                 _thread.start_new_thread(adc_val, ())  #uncomment to call the adc value array
-                utime.sleep_ms(35)
-                shutdownDamp.value(0)
+#                 _thread.start_new_thread(adc_val, ())  
+#                 utime.sleep_ms(35)
+#                 shutdownDamp.value(0)
                  
                 #t = ticker.count
                 pdm2_On(1)
                 #ticker()
-#                 calTime()
-                
+
 #                 PDM_adc()
 #                 dff()
-            
+                ADCscaling()
+                print("adc3 value =", ADCscaling())
+                print("windspeed = ", windspeed)
+                
+                
             if ch == 't': # press s to start
                 shutdownDamp.value (0)
                 #PWM.deinit();
@@ -242,7 +237,8 @@ def uartComm():
 
 while True:
     uartComm()
-#     ADCscaling(volt1)
+#     calTime()
+
     
 
 '''

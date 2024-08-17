@@ -38,10 +38,10 @@ pwm1.duty_u16 ( 32767 ) # duty 50% (65535/2)
 fclk = 1024000 #variable for PDM clock frequency
 pwm2 = PWM ( Pin ( 1, Pin.OUT ) ) # GP1
 pwm2.freq ( fclk ) # fclk = 1.024MHz, 3.072Mhz 
-pwm2.duty_u16 (32767 ) # duty 50% (65535/2)
+pwm2.duty_u16 ( 32767 ) # duty 50% (65535/2)
 
 pwm3 = PWM ( Pin (22, Pin.OUT) ) # GP22 for dflipflop 48000hz
-pwm3.freq (48000)
+pwm3.freq (16000000)
 pwm3.duty_u16 (32767)
 
 #ADC value for PDM mic 2
@@ -86,12 +86,12 @@ def adc_val():
         analogV_arr2.append( adc2.read_u16())
         #volt2.append(analogV_arr2)
         #uncomment to valid the data in excel
-        print("Time1 =", time_arr1)
-        print("Analog Value1 =", analogV_arr1)
-        print("Time2 =", time_arr2)
-        print("Analog Value2 =", analogV_arr2)
+#         print("Time1 =", time_arr1)
+#         print("Analog Value1 =", analogV_arr1)
+#         print("Time2 =", time_arr2)
+#         print("Analog Value2 =", analogV_arr2)
 #         utime.sleep_us(1)
-     
+
 #PDM to ADC function
 
 def PDM_adc():
@@ -188,6 +188,8 @@ def uartComm():
     #dff1
     #print(dff2.value())
     #print(PDM2)
+#         print(dff1.value())
+        
 #         if dff2.value() == True:
 #             time1 = rtc.datetime()
 #         if dff1.value() == True:
@@ -198,13 +200,13 @@ def uartComm():
             if ch == 's': #press t to shutdown
                 print ("Start Digital Amplifier")
                 #fclk = 39000;                
-    
+                shutdownDamp.value(1)   
+                
                 pwm1.freq ( 39000 ) # 39kHz
                 pwm1.duty_u16 ( 32767 )
-                shutdownDamp.value(1)
-#                 _thread.start_new_thread(adc_val, ())  #uncomment to call the adc value array
-                utime.sleep_ms(35)
-                shutdownDamp.value(0)
+#                 _thread.start_new_thread(adc_val, ())  
+#                 utime.sleep_ms(35)
+#                 shutdownDamp.value(0)
                  
                 #t = ticker.count
                 pdm2_On(1)
