@@ -1,7 +1,7 @@
 '''Blink the on board LED Pico W pinouts only
 Patrick Palmer Jan 2024'''
 from machine import Pin, Timer, PWM, UART, ADC, RTC
-from neotimer import *
+# from neotimer import *
 from rp2 import PIO, StateMachine, asm_pio
 import utime 
 #from array import *
@@ -49,7 +49,7 @@ pwm2.duty_u16 (32767 ) # duty 50% (65535/2)
 # adc1 = ADC(Pin(26))     # create ADC object on ADC pin GPIO26 mic1 - uncomment if using analog mic
 # adc2 = ADC(Pin(27))     # create ADC object on ADC pin GPIO27 mic2 - uncomment if using analog mic 
 mic1_FF = Pin (26, Pin.IN, machine.Pin.PULL_UP)     # create PIO pin GPIO26 mic1 - uncomment if using analog mic
-mic2_FF = Pin (27, Pin.IN, machine.Pin.PULL_UP)     # create ADC object on ADC pin GPIO27 mic2 - uncomment if using analog mic 
+mic2_FF = Pin (27, Pin.IN, machine.Pin.PULL_UP)     # create PIO pin GPIO27 mic2 - uncomment if using analog mic 
 
 analogV_arr1 = [] #needs more work on array
 time_arr1 = []
@@ -70,11 +70,11 @@ machine.freq(125000000)
 i = 0;
 def adc_val():
     for i in range(0, 400):
-        time_arr1.append( utime.time_ns())
+        time_arr1.append( utime.ticks_us())
         analogV_arr1.append( adc1.read_u16())
         #volt1.append(analogV_arr1)
         
-        time_arr2.append( utime.time_ns())
+        time_arr2.append( utime.ticks_us())
         analogV_arr2.append( adc2.read_u16())
         #volt2.append(analogV_arr2)
         #uncomment to valid the data in excel
@@ -86,8 +86,9 @@ def adc_val():
 
 time1 = float()
 time2 = float()
+
 # @asm_pio()
-def jkFF1(pin):
+'''def jkFF1(pin):
     global time1
     mic1_FF.irq(handler=None)
 #     mic2_FF.irq(handler=None)
@@ -103,15 +104,44 @@ def jkFF2(pin):
 #     print ("mic1 sig", pin)
     print ("time2=", time2)
     return time2
+'''
+time_diff = 1
+def jkFF(pin):
+    global time1
+    global time2
+    global time_diff
+    mic1_FF.irq(handler=None)
+    mic2_FF.irq(handler=None)
+    if mic1_FF.value() == True:
+        time1 = utime.ticks_us() # could also use utime.ticks_us()
+        print ("time1=", time1)
+    elif mic2_FF.value() == True:
+        time2 = utime.ticks_us()
+        print ("time2=", time2)
+    if time1 !=0 and time2 !=0:
+        time_diff = utime.ticks_diff(time1, time2)  # utime.ticks_diff(jkFF2(pin1)[time2], jkFF1(pin2)[time1])  # can also do this
+        print("delta T=", time_diff)
+        windspeed = 0.01/(time_diff*10**-6) 
+        print("windspeed", windspeed, "[m/s]")
+        utime.sleep_ms(100)
+    
+    return time_diff
 
-
+pin = True
 pin1 = True
 pin2 = True
 
-
-
+mic1_FF.irq(trigger=machine.Pin.IRQ_RISING, handler=jkFF)
+mic2_FF.irq(trigger=machine.Pin.IRQ_RISING, handler=jkFF)
+        
+# _thread.start_new_thread(jkFF, ())
+def troubleshoot():
+    global pin
+    print("Pin 26 value is", mic1_FF.value())
+    print("Pin 27 value is", mic2_FF.value())
+    print ("time_diff=", jkFF(pin))
 # right here Aug 15, need more work to make the time value
-def deltaT():
+'''def deltaT():
     global pin1
     global pin2
     jkFF1(pin1)
@@ -122,7 +152,7 @@ def deltaT():
     print("delta T=", time_diff)
     windspeed = 0.01/(time_diff**-9) 
     print("windspeed", windspeed, "[m/s]")
-
+'''
 
 conversion_fact = float()
 conversion_fact = 3.3/(65535)
@@ -144,44 +174,6 @@ time_old = 1
 time_new = 2
 windspeed = float()
 
-
-
-#@asm_pio(set_init=PIO.OUT_HIGH)
-# def usPulse():
-#     print ("Start Digital Amplifier")
-#     set(pins, 1)   
-#     adc_val() 
-#     pwm1.freq ( 39000 ) # 39kHz
-#     pwm1.duty_u16 ( 32767 )             
-#     utime.sleep_ms(35)
-#     set(pins, 0)  
-#     
-#@asm_pio(set_init=PIO.OUT_LOW)
-# def usPulseL():
-#     set(pins, 0)  
-#     print ("Shut Down Digital Amplifier")
-#     fclk = 1024000
-#     pwm2.freq ( fclk )
-#     pdm2_On(0)
-#     #reset the array values
-#     time_arr1 = 0
-#     analogV_arr1 = 0
-#     time_arr2 = 0
-#     analogV_arr2 = 0
-#     
-# sm1 = StateMachine( 1, usPulse, freq = 125000000, set_base=Pin(17) )
-# sm2 = StateMachine( 2, usPulseL, freq = 125000000, set_base=Pin(17) )
-# def StateM_func():
-#     while True:
-#         sm1.active(1)
-#         utime.sleep_ms(50)
-#         sm1.active(0)
-#         
-#         sm2.active(1)
-#         utime.sleep_ms(50)
-#         sm2.active(0)
-#         
-# _thread.start_new_thread(StateM_func, ())
 
 cntr = 0
     
@@ -209,7 +201,7 @@ def uartComm():
 #                 shutdownDamp.value(0)
                  
                 pdm2_On(1)
-                _thread.start_new_thread(deltaT, ())
+                troubleshoot()
 #                 deltaT()
 #                 PDM_adc()
 #                 dff()

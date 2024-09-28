@@ -1,0 +1,16 @@
+# ninja log v6
+14	110	7466149129239207	pico-sdk/src/rp2350/boot_stage2/CMakeFiles/bs2_default.dir/compile_time_choice.S.obj	769ea6202067bbfb
+23	131	7466149130156760	blink.pio.h	726fca0d62696bd8
+23	131	7466149130156760	F:/GitHub/usAnemometer/program/playground/new_pio/build/blink.pio.h	726fca0d62696bd8
+121	394	7466149130306359	pico-sdk/src/rp2350/boot_stage2/bs2_default.elf	d26ad3ae80e0af81
+394	456	7466149133617508	pico-sdk/src/rp2350/boot_stage2/bs2_default.bin	933efbbb9631324e
+394	456	7466149133617508	F:/GitHub/usAnemometer/program/playground/new_pio/build/pico-sdk/src/rp2350/boot_stage2/bs2_default.bin	933efbbb9631324e
+456	607	7466149135085114	pico-sdk/src/rp2350/boot_stage2/bs2_default_padded_checksummed.S	600af464d9f5aa5
+456	607	7466149135085114	F:/GitHub/usAnemometer/program/playground/new_pio/build/pico-sdk/src/rp2350/boot_stage2/bs2_default_padded_checksummed.S	600af464d9f5aa5
+627	1001	7466149135374353	CMakeFiles/new_pio.dir/C_/Users/gene_/.pico-sdk/sdk/2.0.0/src/rp2_common/pico_stdlib/stdlib.c.obj	4b782b8ea58f219b
+678	1036	7466149135873010	CMakeFiles/new_pio.dir/C_/Users/gene_/.pico-sdk/sdk/2.0.0/src/rp2350/pico_platform/platform.c.obj	f75b3b0df4f6d8d9
+706	1070	7466149136152265	CMakeFiles/new_pio.dir/C_/Users/gene_/.pico-sdk/sdk/2.0.0/src/rp2_common/pico_platform_panic/panic.c.obj	f32154f743e85026
+845	1102	7466149137548535	CMakeFiles/new_pio.dir/C_/Users/gene_/.pico-sdk/sdk/2.0.0/src/rp2_common/hardware_irq/irq_handler_chain.S.obj	7c398deb2ae73a2a
+1037	1352	7466149139463415	CMakeFiles/new_pio.dir/C_/Users/gene_/.pico-sdk/sdk/2.0.0/src/common/pico_time/timeout_helper.c.obj	cb54257328ded4dd
+1102	1437	7466149140121660	CMakeFiles/new_pio.dir/C_/Users/gene_/.pico-sdk/sdk/2.0.0/src/common/pico_util/datetime.c.obj	21bb8f0be664c801
+356	718	7466149215398924	CMakeFiles/new_pio.dir/C_/Users/gene_/.pico-sdk/sdk/2.0.0/src/common/pico_util/pheap.c.obj	8cc1191e9b63854f
