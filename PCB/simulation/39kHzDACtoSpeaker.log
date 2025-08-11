@@ -1,0 +1,68 @@
+Circuit: * F:\Grad\24SP\MSE894\project\simulation\39kHzDACtoSpeaker.asc
+
+WARNING: Less than two connections to node sw5.  This node is used by b3.
+WARNING: Less than two connections to node qzero.  This node is used by a1.
+WARNING: Less than two connections to node qzero3.  This node is used by a2.
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+Gmin = 0.00132923
+Gmin = 0.000142725
+Gmin = 1.5325e-05
+Gmin = 1.6455e-06
+vernier = 0.5
+Gmin = 2.7607e-07
+vernier = 0.25
+vernier = 0.125
+vernier = 0.0625
+vernier = 0.03125
+Gmin = 2.37874e-07
+vernier = 0.0416667
+vernier = 0.0555555
+Gmin = 2.12811e-07
+vernier = 0.074074
+vernier = 0.0987653
+Gmin = 1.78491e-07
+vernier = 0.131687
+Gmin = 1.34373e-07
+vernier = 0.175583
+vernier = 0.23411
+Gmin = 8.47612e-08
+vernier = 0.312147
+vernier = 0.416196
+Gmin = 4.12383e-08
+vernier = 0.554928
+Gmin = 1.31296e-08
+vernier = 0.739903
+vernier = 0.986537
+Gmin = 2.14959e-09
+vernier = 1
+Gmin = 2.32685e-10
+Gmin = 2.49844e-11
+Gmin = 2.68268e-12
+Gmin = 2.8805e-13
+Gmin = 0
+Gmin stepping succeeded in finding the operating point.
+
+
+Date: Fri Jul 12 12:43:42 2024
+Total elapsed time: 1.109 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 64631
+traniter = 63431
+tranpoints = 30497
+accept = 25304
+rejected = 5193
+matrix size = 53
+fillins = 77
+solver = Normal
+Avg thread counts: 3.0/3.1/1.1/1.1
+Matrix Compiler1: 5.66 KB object code size  1.4/0.8/[0.7]
+Matrix Compiler2: 5.02 KB object code size  0.3/0.7/[0.3]
+
